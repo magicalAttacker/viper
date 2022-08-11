@@ -208,3 +208,28 @@ export function checkstatus(user, key, secret, res) {
         }
     })
 }
+export function rejectorder(user, key, secret, res) {
+    client.connect(async () => {
+        if (key !== user.username + user.password) {
+            const errStatus = new Status(0, 'rejectorder', 'invalid operation')
+            res.send(errStatus)
+            return
+        }
+        const userCollection = client.db('viper').collection('user')
+        const userResult = await userCollection.findOne({username: user.username, password: user.password})
+        if (userResult === null) {
+            const errStatus = new Status(0, 'rejectorder', 'auth error')
+            res.send(errStatus)
+            return
+        }
+        const orderCollection = client.db('viper').collection('order')
+        const orderResult = await orderCollection.updateOne({username: user.username, status: 'paying', uuid: secret}, {$set: {status: 'rejected'}})
+        if (orderResult.modifiedCount !== 1) {
+            const errStatus = new Status(0, 'rejectorder', 'invalid operation')
+            res.send(errStatus)
+            return
+        }
+        const status = new Status(1, 'rejectorder', 'reject order successful')
+        res.send(status)
+    })
+}

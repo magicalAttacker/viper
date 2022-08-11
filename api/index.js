@@ -1,7 +1,17 @@
 import express from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import {User} from "./user";
-import {checkstatus, createorder, getallorder, getuserorder, login, setvip, signup, userlist} from "./utils";
+import {
+    checkstatus,
+    createorder,
+    getallorder,
+    getuserorder,
+    login,
+    rejectorder,
+    setvip,
+    signup,
+    userlist
+} from "./utils";
 var bodyParser = require('body-parser')
 const app = express()
 
@@ -35,6 +45,14 @@ app.post('/api/setvip', (req, res) => {
     const secret = req.body.secret
     const user = new User(username, password)
     setvip(user, key, secret, res)
+})
+app.post('/api/rejectorder', (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+    const key = req.body.key
+    const secret = req.body.secret
+    const user = new User(username, password)
+    rejectorder(user, key, secret, res)
 })
 app.post('/api/checkstatus', (req, res) => {
     const username = req.body.username
