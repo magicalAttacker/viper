@@ -91,7 +91,7 @@ export function setvip(user, key, secret, res) {
         }
     })
 }
-export function createorder(user, key, res) {
+export function createorder(user, key, msg, res) {
     client.connect(async () => {
         if (user.username + user.password !== key) {
             const errStatus = new Status(0, 'createorder', 'operation refused')
@@ -106,7 +106,7 @@ export function createorder(user, key, res) {
             res.send(status)
             return
         }
-        const order = new Order(user)
+        const order = new Order(user, msg)
         const initResult = orderCollection.updateMany({username: user.username}, {$set: {status: 'expired'}})
         initResult.then(() => {
             orderCollection.insertOne(order.getOrderInfo(), (err) => {

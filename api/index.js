@@ -66,8 +66,9 @@ app.post('/api/createorder', (req, res) => {
     const username = req.body.username
     const password = req.body.password
     const key = req.body.key
+    const msg = req.body.msg
     const user = new User(username, password)
-    createorder(user, key, res)
+    createorder(user, key, msg, res)
 })
 app.get('/api/getuserlist', (req, res) => {
     userlist(res)
